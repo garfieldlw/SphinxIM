@@ -1,0 +1,2 @@
+# SphinxIM
+Sphinx Input Method
