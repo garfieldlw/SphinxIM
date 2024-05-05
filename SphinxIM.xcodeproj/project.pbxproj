@@ -12,9 +12,12 @@
 		B66E9DD92BE69A6F00E7505D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66E9DD82BE69A6F00E7505D /* AppDelegate.swift */; };
 		B66E9DDB2BE69A8E00E7505D /* SphinxIMInputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66E9DDA2BE69A8E00E7505D /* SphinxIMInputController.swift */; };
 		B67463A42BE6AECE00BD2673 /* SphinxIM.tiff in Resources */ = {isa = PBXBuildFile; fileRef = B67463A32BE6AECE00BD2673 /* SphinxIM.tiff */; };
+		FAF58CFC3FC0436781C2ABF4 /* libPods-SphinxIM.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 40850D02D6B7DFABB1BAA9DF /* libPods-SphinxIM.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		40850D02D6B7DFABB1BAA9DF /* libPods-SphinxIM.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SphinxIM.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		99E1AD58D7A5B44553EC67F7 /* Pods-SphinxIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SphinxIM.debug.xcconfig"; path = "Target Support Files/Pods-SphinxIM/Pods-SphinxIM.debug.xcconfig"; sourceTree = "<group>"; };
 		B66E9DC12BE69A2800E7505D /* SphinxIM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SphinxIM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66E9DC82BE69A2A00E7505D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B66E9DCB2BE69A2A00E7505D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -24,6 +27,7 @@
 		B66E9DD82BE69A6F00E7505D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B66E9DDA2BE69A8E00E7505D /* SphinxIMInputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphinxIMInputController.swift; sourceTree = "<group>"; };
 		B67463A32BE6AECE00BD2673 /* SphinxIM.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SphinxIM.tiff; sourceTree = "<group>"; };
+		C8B2C028E5CED0A859DBB1A9 /* Pods-SphinxIM.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SphinxIM.release.xcconfig"; path = "Target Support Files/Pods-SphinxIM/Pods-SphinxIM.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +35,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAF58CFC3FC0436781C2ABF4 /* libPods-SphinxIM.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A5F4469EA39D5F85ECC2CA54 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				40850D02D6B7DFABB1BAA9DF /* libPods-SphinxIM.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B66E9DB82BE69A2800E7505D = {
 			isa = PBXGroup;
 			children = (
 				B66E9DC32BE69A2800E7505D /* SphinxIM */,
 				B66E9DC22BE69A2800E7505D /* Products */,
+				E45A5E9BBF0EEA69B655A655 /* Pods */,
+				A5F4469EA39D5F85ECC2CA54 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +91,16 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		E45A5E9BBF0EEA69B655A655 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				99E1AD58D7A5B44553EC67F7 /* Pods-SphinxIM.debug.xcconfig */,
+				C8B2C028E5CED0A859DBB1A9 /* Pods-SphinxIM.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,9 +108,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B66E9DD02BE69A2A00E7505D /* Build configuration list for PBXNativeTarget "SphinxIM" */;
 			buildPhases = (
+				9064ADA45ACF87926451DDDB /* [CP] Check Pods Manifest.lock */,
 				B66E9DBD2BE69A2800E7505D /* Sources */,
 				B66E9DBE2BE69A2800E7505D /* Frameworks */,
 				B66E9DBF2BE69A2800E7505D /* Resources */,
+				CE441B324280525B25948D1D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -142,6 +169,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9064ADA45ACF87926451DDDB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SphinxIM-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CE441B324280525B25948D1D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SphinxIM/Pods-SphinxIM-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SphinxIM/Pods-SphinxIM-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SphinxIM/Pods-SphinxIM-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B66E9DBD2BE69A2800E7505D /* Sources */ = {
@@ -276,6 +345,7 @@
 		};
 		B66E9DD12BE69A2A00E7505D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 99E1AD58D7A5B44553EC67F7 /* Pods-SphinxIM.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -307,6 +377,7 @@
 		};
 		B66E9DD22BE69A2A00E7505D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C8B2C028E5CED0A859DBB1A9 /* Pods-SphinxIM.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
