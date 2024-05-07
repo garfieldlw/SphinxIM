@@ -25,17 +25,35 @@ class NSManualApplication: NSApplication {
 
 @main
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var server = IMKServer()
-    var candidatesWindow = IMKCandidates()
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        // Insert code here to initialize your application
-        self.server = IMKServer(name: Bundle.main.infoDictionary?["InputMethodConnectionName"] as? String, bundleIdentifier: Bundle.main.bundleIdentifier)
-        self.candidatesWindow = IMKCandidates(server: server, panelType: kIMKSingleRowSteppingCandidatePanel, styleType: kIMKMain)
-        NSLog("tried connection")
+    var sphinx: SphinxIM!
+    var statistics: Statistics!
+
+    func installInputSource() {
+        print("install input source")
+        InputSource.shared.registerInputSource()
+        InputSource.shared.activateInputSource()
+        InputSource.shared.selectInputSource { _ in
+            NSApp.terminate(self)
+        }
     }
 
-    func applicationWillTerminate(_ notification: Notification) {
+    func stop() {
+        InputSource.shared.deactivateInputSource()
+        NSApp.terminate(nil)
+    }
+
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        NSLog("[SphinxIM] app is running")
+        
+        Dao.shared.InitDB()
+        
+        sphinx = SphinxIM.shared
+        statistics = Statistics.shared
+    }
+
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
+
 }
