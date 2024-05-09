@@ -10,7 +10,7 @@ import Foundation
 
 extension SphinxIMInputController {
     func previousClientHandler() {
-        clean()
+        close()
     }
 
     override func activateServer(_ sender: Any!) {
@@ -23,7 +23,7 @@ extension SphinxIMInputController {
     }
     override func deactivateServer(_ sender: Any!) {
         insertOriginText()
-        clean()
+        close()
         NSLog("[SphinxIMInputController] deactivate server: \(client()?.bundleIdentifier() ?? "no client deactivate")")
     }
 }

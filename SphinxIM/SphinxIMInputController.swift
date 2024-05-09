@@ -14,7 +14,7 @@ typealias NotificationObserver = (name: Notification.Name, callback: (_ notifica
 class SphinxIMInputController: IMKInputController {
     private var _candidates: [Candidate] = []
     
-    private var _hasNext: Bool = false
+    private var _candidatesMap: [Int: [Candidate]] = [:]
     
     private var _lastInputIsNumber = false
     
@@ -22,39 +22,53 @@ class SphinxIMInputController: IMKInputController {
     
     deinit {
         NSLog("[SphinxIMInputController] deinit")
-        clean()
+        close()
     }
     
     private var _originalString = "" {
         didSet {
-            if self.curPage != 1 {
-                _candidates = []
-                _hasNext = false
-                self.curPage = 1
-                self.markText()
-                return
+            if self._curPage > 0 {
+                self._curPage = 0
             }
+            
             NSLog("[SphinxIMInputController] original changed: \(self._originalString), refresh window")
             
             self.markText()
             
-            self._originalString.count > 0 ? self.refreshCandidatesWindow() : CandidatesController.shared.close()
+            self._originalString.count > 0 ? self._curPage = 1 : CandidatesController.shared.close()
         }
     }
-    private var curPage: Int = 1 {
-        didSet(old) {
-            guard old == self.curPage else {
-                NSLog("[SphinxIMInputController] page changed")
-                self.refreshCandidatesWindow()
+    
+    private var _curPage: Int = 0 {
+        didSet {
+            if self._curPage == 0 {
+                self._candidates = []
+                self._candidatesMap = [:]
                 return
             }
+            
+            if oldValue == self._curPage {
+                return
+            }
+            
+            NSLog("[SphinxIMInputController] page changed")
+            
+            if oldValue > self._curPage {
+                self.refreshCandidatesWindow(pre_next:false)
+            }else {
+                self.refreshCandidatesWindow(pre_next: true)
+            }
+     
+            return
+            
         }
     }
+    
     func prevPage() {
-        self.curPage = self.curPage > 1 ? self.curPage - 1 : 1
+        self._curPage = self._curPage > 1 ? self._curPage - 1 : 1
     }
     func nextPage() {
-        self.curPage = self._hasNext ? self.curPage + 1 : self.curPage
+        self._curPage = self._curPage + 1
     }
     
     private func markText() {
@@ -84,42 +98,37 @@ class SphinxIMInputController: IMKInputController {
         if event.type == .flagsChanged {
             return nil
         }
+        
         if event.charactersIgnoringModifiers == nil {
             return nil
         }
+        
         guard let num = Int(event.charactersIgnoringModifiers!) else {
             return nil
         }
-        if event.modifierFlags == .control &&
-            num > 0 && num <= _candidates.count {
+        
+        if event.modifierFlags == .control && num > 0 && num <= self._candidates.count {
             NSLog("hotkey: control + \(num)")
-            _candidates = []
-            _hasNext = false
-            self.curPage = 1
-            self.refreshCandidatesWindow()
             return true
         }
+        
         return nil
     }
     
     func flagChangedHandler(event: NSEvent) -> Bool? {
-        if event.type == .flagsChanged ||
-            (event.modifierFlags != .init(rawValue: 0) &&
-             event.modifierFlags != .shift &&
-             event.modifierFlags != .init(arrayLiteral: .numericPad, .function)
-            ) {
+        if event.type == .flagsChanged || (event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift && event.modifierFlags != .init(arrayLiteral: .numericPad, .function)) {
             return false
         }
         return nil
     }
     
     private func predictorHandler(event: NSEvent) -> Bool? {
-        _lastInputIsNumber = false
+        self._lastInputIsNumber = false
         
-        _lastInputText = getPreviousText()
+        self._lastInputText = getPreviousText()
         
         NSLog("[SphinxIMInputController] predictorHandler range, selectionRange: \(selectionRange()), replacementRange: \(replacementRange()), client.selectedRange: \(client().selectedRange()), client.markedRange: \(client().markedRange())")
-        NSLog("[SphinxIMInputController] predictorHandler previous text, \(_lastInputText)")
+        NSLog("[SphinxIMInputController] predictorHandler previous text, \(self._lastInputText)")
         
         return nil
     }
@@ -127,20 +136,16 @@ class SphinxIMInputController: IMKInputController {
     private func pageKeyHandler(event: NSEvent) -> Bool? {
         let keyCode = event.keyCode
         
-        if _originalString.count > 0 {
-            let needNextPage = keyCode == kVK_ANSI_Equal ||
-            (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) ||
-            (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
+        if self._originalString.count > 0 {
+            let needNextPage = keyCode == kVK_ANSI_Equal || (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) || (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
             if needNextPage {
-                curPage = _hasNext ? curPage + 1 : curPage
+                nextPage()
                 return true
             }
             
-            let needPrevPage = keyCode == kVK_ANSI_Minus ||
-            (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) ||
-            (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
+            let needPrevPage = keyCode == kVK_ANSI_Minus || (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) || (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
             if needPrevPage {
-                curPage = curPage > 1 ? curPage - 1 : 1
+                prevPage()
                 return true
             }
         }else {
@@ -153,8 +158,8 @@ class SphinxIMInputController: IMKInputController {
     
     private func deleteKeyHandler(event: NSEvent) -> Bool? {
         if event.keyCode == kVK_Delete {
-            if _originalString.count > 0 {
-                _originalString = String(_originalString.dropLast())
+            if self._originalString.count > 0 {
+                self._originalString = String(self._originalString.dropLast())
                 return true
             }
             return false
@@ -168,18 +173,19 @@ class SphinxIMInputController: IMKInputController {
         guard let reg = try? NSRegularExpression(pattern: "^[a-zA-Z]+$") else {
             return nil
         }
+        
         let match = reg.firstMatch(
             in: string,
             options: [],
             range: NSRange(location: 0, length: string.count)
         )
         
-        if  _originalString.count <= 0 && match == nil {
+        if  self._originalString.count <= 0 && match == nil {
             return nil
         }
         
         if match != nil {
-            _originalString += string
+            self._originalString += string
             
             return true
         }
@@ -189,16 +195,16 @@ class SphinxIMInputController: IMKInputController {
     private func numberKeyHandlder(event: NSEvent) -> Bool? {
         let string = event.characters!
         if let pos = Int(string) {
-            if _originalString.count > 0 {
+            if self._originalString.count > 0 {
                 let index = pos - 1
-                if index < _candidates.count {
-                    insertCandidate(_candidates[index])
+                if index < self._candidates.count {
+                    insertCandidate(self._candidates[index])
                 } else {
-                    _originalString += string
+                    self._originalString += string
                 }
                 return true
             }
-            _lastInputIsNumber = true
+            self._lastInputIsNumber = true
             
             return false
         }
@@ -207,8 +213,8 @@ class SphinxIMInputController: IMKInputController {
     
     private func escKeyHandler(event: NSEvent) -> Bool? {
         if event.keyCode == kVK_Escape{
-            if _originalString.count > 0 {
-                clean()
+            if self._originalString.count > 0 {
+                close()
                 return true
             }
             return false
@@ -218,8 +224,8 @@ class SphinxIMInputController: IMKInputController {
     
     private func enterKeyHandler(event: NSEvent) -> Bool? {
         if event.keyCode == kVK_Return {
-            if  _originalString.count > 0 {
-                insertText(_originalString)
+            if  self._originalString.count > 0 {
+                insertText(self._originalString)
                 return true
             }
             return false
@@ -229,7 +235,7 @@ class SphinxIMInputController: IMKInputController {
     
     private func spaceKeyHandler(event: NSEvent) -> Bool? {
         if event.keyCode == kVK_Space {
-            if _originalString.count > 0 {
+            if self._originalString.count > 0 {
                 if let first = self._candidates.first {
                     insertCandidate(first)
                 }
@@ -252,6 +258,7 @@ class SphinxIMInputController: IMKInputController {
         if isCurrentApp {
             events = NSEvent.EventTypeMask(arrayLiteral: .keyDown, .flagsChanged)
         }
+        
         return Int(events.rawValue)
     }
     
@@ -274,27 +281,25 @@ class SphinxIMInputController: IMKInputController {
             spaceKeyHandler,
             punctuationKeyHandler
         ])
+        
         return handler(event) ?? false
     }
     
-    func updateCandidates(_ sender: Any!) {
-        let (candidates, hasNext) = SphinxIM.shared.getCandidates(origin: self._originalString,lastCandidate: _candidates.last)
-        _candidates = candidates
-        _hasNext = hasNext
-    }
-    
-    func refreshCandidatesWindow() {
-        updateCandidates(client())
-        let candidatesData = (list: _candidates, hasPrev: curPage > 1, hasNext: _hasNext)
-        CandidatesController.shared.setCandidates(
-            candidatesData,
-            originalString: _originalString,
-            topLeft: getOriginPoint()
-        )
+    func refreshCandidatesWindow(pre_next: Bool) {
+        if let index = self._candidatesMap.index(forKey: self._curPage) {
+            self._candidates = self._candidatesMap.values[index]
+        } else {
+            self._candidates = SphinxIM.shared.getCandidates(origin: self._originalString, lastCandidate: self._candidates.last)
+            self._candidatesMap[self._curPage] = self._candidates
+        }
+        
+        let candidatesData = (list: self._candidates, hasPrev: self._curPage > 1, hasNext: true)
+        
+        CandidatesController.shared.setCandidates(candidatesData,originalString: self._originalString,topLeft: getOriginPoint())
     }
     
     override func selectionRange() -> NSRange {
-        return NSRange(location: 0, length: _originalString.count)
+        return NSRange(location: 0, length: self._originalString.count)
     }
     
     func insertCandidate(_ candidate: Candidate) {
@@ -314,9 +319,10 @@ class SphinxIMInputController: IMKInputController {
             var newText = text
             let value = NSAttributedString(string: newText)
             client()?.insertText(value, replacementRange: replacementRange())
-            _lastInputIsNumber = newText.last != nil && Int(String(newText.last!)) != nil
+            self._lastInputIsNumber = newText.last != nil && Int(String(newText.last!)) != nil
         }
-        clean()
+        
+        close()
     }
     
     func insertOriginText() {
@@ -333,12 +339,10 @@ class SphinxIMInputController: IMKInputController {
         return NSPoint(x: rect.minX + xd, y: rect.minY - yd)
     }
     
-    func clean() {
-        NSLog("[SphinxIMInputController] clean")
-        _originalString = ""
-        _candidates = []
-        _hasNext = false
-        curPage = 1
+    func close() {
+        NSLog("[SphinxIMInputController] close")
+        self._originalString = ""
+        self._curPage = 0
         CandidatesController.shared.close()
     }
 }

@@ -21,9 +21,9 @@ class SphinxIM: NSObject {
     
     var server: IMKServer = IMKServer.init(name: Bundle.main.infoDictionary?["InputMethodConnectionName"] as? String, bundleIdentifier: Bundle.main.bundleIdentifier)
     
-    func getCandidates(origin: String, lastCandidate: Candidate?) -> ( [Candidate],  Bool) {
+    func getCandidates(origin: String, lastCandidate: Candidate?) -> [Candidate] {
         if origin.count <= 0 {
-            return ([], false)
+            return []
         }
         
         var lastId: Int64 = 0
@@ -33,11 +33,11 @@ class SphinxIM: NSObject {
         }
         
         let  candidates =   DaoDictEn1.shared.List(id: lastId, code: origin, limit: 6)
-        let hasNext = true
         let transformed = candidates.map { (candidate) -> Candidate in
             return Candidate(id: candidate.id, code: candidate.code, text: candidate.text, count: candidate.count, type_mode: .enUS ,type_method:.en1)
         }
-        return (transformed, hasNext)
+        
+        return transformed
     }
     
     static let shared = SphinxIM()
