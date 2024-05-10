@@ -20,6 +20,8 @@ class SphinxIMInputController: IMKInputController {
     
     private var _lastInputText = ""
     
+    private var _limit = 6
+    
     deinit {
         NSLog("[SphinxIMInputController] deinit")
         close()
@@ -289,11 +291,11 @@ class SphinxIMInputController: IMKInputController {
         if let index = self._candidatesMap.index(forKey: self._curPage) {
             self._candidates = self._candidatesMap.values[index]
         } else {
-            self._candidates = SphinxIM.shared.getCandidates(origin: self._originalString, lastCandidate: self._candidates.last)
+            self._candidates = SphinxIM.shared.getCandidates(origin: self._originalString, lastCandidate: self._candidates.last, limit: self._limit)
             self._candidatesMap[self._curPage] = self._candidates
         }
         
-        let candidatesData = (list: self._candidates, hasPrev: self._curPage > 1, hasNext: true)
+        let candidatesData = (list: self._candidates, hasPrev: self._curPage > 1, hasNext: self._candidates.count > 0)
         
         CandidatesController.shared.setCandidates(candidatesData,originalString: self._originalString,topLeft: getOriginPoint())
     }

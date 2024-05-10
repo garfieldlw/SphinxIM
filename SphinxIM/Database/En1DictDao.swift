@@ -43,7 +43,7 @@ class DaoDictEn1 {
             }
             
         }catch {
-            NSLog("[DaoDictEn1]init: "+error.localizedDescription)
+            NSLog("[DaoDictEn1]list: "+error.localizedDescription)
         }
         
         return dicts
