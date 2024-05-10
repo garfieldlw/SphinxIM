@@ -9,10 +9,8 @@
 import SwiftUI
 import InputMethodKit
 
-typealias CandidatesData = (list: [Candidate], hasPrev: Bool, hasNext: Bool)
-
 class CandidatesController: NSWindow, NSWindowDelegate {
-    let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: ""))
+    let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: "", selected: 0))
     var inputController: SphinxIMInputController?
 
     func windowDidMove(_ notification: Notification) {
@@ -25,19 +23,17 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         limitFrameInScreen()
     }
 
-    func setCandidates(
-        _ candidatesData: CandidatesData,
-        originalString: String,
-        topLeft: NSPoint
-    ) {
-        hostingView.rootView.candidates = candidatesData.list
+    func setCandidates(list: [Candidate], selected: Int,originalString: String, topLeft: NSPoint) {
+        hostingView.rootView.candidates = list
         hostingView.rootView.origin = originalString
-        hostingView.rootView.hasNext = candidatesData.hasNext
-        hostingView.rootView.hasPrev = candidatesData.hasPrev
+        hostingView.rootView.selected = selected
         NSLog("origin top left: \(topLeft)")
-        NSLog("candidates: \(candidatesData)")
         self.setFrameTopLeftPoint(topLeft)
         self.orderFront(nil)
+    }
+    
+    func updateSelectedCandidate(_ selected: Int) {
+        hostingView.rootView.selected = selected
     }
 
     func bindEvents() {
@@ -47,8 +43,6 @@ class CandidatesController: NSWindow, NSWindowDelegate {
                     self.inputController?.insertCandidate(candidate)
                 }
             }),
-            (CandidatesView.prevPageBtnTapped, { _ in self.inputController?.prevPage() }),
-            (CandidatesView.nextPageBtnTapped, { _ in self.inputController?.nextPage() }),
         ]
         
         events.forEach { (observer) in NotificationCenter.default.addObserver(

@@ -11,28 +11,30 @@ struct CandidateView: View {
     var candidate: Candidate
     var index: Int
     var origin: String
-    var selected: Bool = false
     var indexVisible = true
+    
+    var selected: Int
 
     @Default(.themeConfig) private var themeConfig
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        let indexColor = selected
-            ? themeConfig[colorScheme].selectedIndexColor
-            : themeConfig[colorScheme].candidateIndexColor
-        let codeColor = selected
-            ? themeConfig[colorScheme].selectedCodeColor
-            : themeConfig[colorScheme].candidateCodeColor
-
         return HStack(alignment: .center, spacing: 2) {
-            if indexVisible {
-                Text("\(index + 1).")
-                    .foregroundColor(Color(indexColor))
+            if selected == index {
+                if indexVisible {
+                    Text("\(index + 1).")
+                        .foregroundColor(Color(themeConfig[colorScheme].selectedIndexColor))
+                }
+                
+                Text(candidate.text).foregroundColor(Color(themeConfig[colorScheme].selectedCodeColor))
+            } else {
+                if indexVisible {
+                    Text("\(index + 1).")
+                        .foregroundColor(Color(themeConfig[colorScheme].candidateIndexColor))
+                }
+                
+                Text(candidate.text).foregroundColor(Color(themeConfig[colorScheme].candidateCodeColor))
             }
-            
-            Text(candidate.text).foregroundColor(Color(codeColor))
-            
         }
         .onTapGesture {
             NotificationCenter.default.post(
@@ -44,18 +46,16 @@ struct CandidateView: View {
                 ]
             )
         }
+        
     }
 }
 
 struct CandidatesView: View {
     static let candidateSelected = Notification.Name("CandidatesView.candidateSelected")
-    static let nextPageBtnTapped = Notification.Name("CandidatesView.nextPageBtnTapped")
-    static let prevPageBtnTapped = Notification.Name("CandidatesView.prevPageBtnTapped")
 
     var candidates: [Candidate]
     var origin: String
-    var hasPrev: Bool = false
-    var hasNext: Bool = false
+    var selected: Int
 
     @Default(.candidatesDirection) private var direction
     @Default(.themeConfig) private var themeConfig
@@ -68,8 +68,8 @@ struct CandidatesView: View {
                 candidate: candidate,
                 index: index,
                 origin: origin,
-                selected: index == 0,
-                indexVisible: candidates.count > 1
+                indexVisible: candidates.count > 1,
+                selected: selected
             )
         }
     }
@@ -102,25 +102,10 @@ struct CandidatesView: View {
         if candidates.count <= 1 {
             return AnyView(EmptyView())
         }
-        let arrowUp = getIndicatorIcon(
-            imageName: "arrowUp",
-            direction: direction,
-            disabled: !hasPrev,
-            eventName: CandidatesView.prevPageBtnTapped
-        )
-        let arrowDown = getIndicatorIcon(
-            imageName: "arrowDown",
-            direction: direction,
-            disabled: !hasNext,
-            eventName: CandidatesView.nextPageBtnTapped
-        )
-        if direction == CandidatesDirection.horizontal {
-            return AnyView(VStack(spacing: 0) { arrowUp; arrowDown })
-        } else {
-            return AnyView(HStack(spacing: 4) { arrowUp; arrowDown })
-        }
+        
+        return AnyView(VStack(spacing: 0) {  })
     }
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: CGFloat( themeConfig[colorScheme].originCandidatesSpace), content: {
             if showCodeInWindow {
@@ -153,10 +138,3 @@ struct CandidatesView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        CandidatesView(candidates: [
-            Candidate(id:1, code: "a", text: "a", count:1, type_mode: CandidateTypeMode.enUS, type_method: CandidateTypeMethod.en1),
-        ], origin: "a")
-    }
-}

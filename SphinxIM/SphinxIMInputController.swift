@@ -16,6 +16,8 @@ class SphinxIMInputController: IMKInputController {
     
     private var _candidatesMap: [Int: [Candidate]] = [:]
     
+    private var _hasNext = false
+    
     private var _lastInputIsNumber = false
     
     private var _lastInputText = ""
@@ -41,11 +43,13 @@ class SphinxIMInputController: IMKInputController {
         }
     }
     
-    private var _curPage: Int = 0 {
+    private var _curPage = 0 {
         didSet {
             if self._curPage == 0 {
                 self._candidates = []
                 self._candidatesMap = [:]
+                self._hasNext = false
+                self._selected = 0
                 return
             }
             
@@ -66,11 +70,22 @@ class SphinxIMInputController: IMKInputController {
         }
     }
     
+    private var _selected = 0 {
+        didSet {
+            if oldValue == self._selected {
+                return
+            }
+            
+            NSLog("[SphinxIMInputController] selected changed")
+            self.updateSelectedCandidatesWindow()
+        }
+    }
+    
     func prevPage() {
         self._curPage = self._curPage > 1 ? self._curPage - 1 : 1
     }
     func nextPage() {
-        self._curPage = self._curPage + 1
+        self._curPage = self._hasNext ? self._curPage + 1 : self._curPage
     }
     
     private func markText() {
@@ -139,19 +154,33 @@ class SphinxIMInputController: IMKInputController {
         let keyCode = event.keyCode
         
         if self._originalString.count > 0 {
-            let needNextPage = keyCode == kVK_ANSI_Equal || (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) || (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
+            let needNextPage = keyCode == kVK_ANSI_Equal || keyCode == kVK_PageDown || (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .horizontal) || (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .vertical)
             if needNextPage {
                 nextPage()
                 return true
             }
             
-            let needPrevPage = keyCode == kVK_ANSI_Minus || (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) || (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
+            let needPrevPage = keyCode == kVK_ANSI_Minus || keyCode == kVK_PageUp || (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .horizontal) || (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .vertical)
             if needPrevPage {
                 prevPage()
                 return true
             }
+            
+            if (keyCode == kVK_DownArrow && Defaults[.candidatesDirection] == .vertical) || (keyCode == kVK_RightArrow && Defaults[.candidatesDirection] == .horizontal){
+                self._selected = self._candidates.count - 1 > self._selected ? self._selected + 1 : self._selected
+                return true
+            }
+            
+            if (keyCode == kVK_UpArrow && Defaults[.candidatesDirection] == .vertical) || (keyCode == kVK_LeftArrow && Defaults[.candidatesDirection] == .horizontal){
+                self._selected = self._selected > 0 ? self._selected - 1 : self._selected
+                return true
+            }
+            
+            if keyCode == kVK_ANSI_Equal || keyCode == kVK_ANSI_Minus || keyCode == kVK_PageUp || keyCode == kVK_PageDown || keyCode == kVK_DownArrow  || keyCode == kVK_RightArrow  || keyCode == kVK_UpArrow  || keyCode == kVK_LeftArrow  {
+                return true
+            }
         }else {
-            if keyCode == kVK_ANSI_Equal || keyCode == kVK_ANSI_Minus || keyCode == kVK_DownArrow  || keyCode == kVK_RightArrow  || keyCode == kVK_UpArrow  || keyCode == kVK_LeftArrow  {
+            if keyCode == kVK_ANSI_Equal || keyCode == kVK_ANSI_Minus ||  keyCode == kVK_PageUp || keyCode == kVK_PageDown || keyCode == kVK_DownArrow  || keyCode == kVK_RightArrow  || keyCode == kVK_UpArrow  || keyCode == kVK_LeftArrow  {
                 return false
             }
         }
@@ -238,12 +267,27 @@ class SphinxIMInputController: IMKInputController {
     private func spaceKeyHandler(event: NSEvent) -> Bool? {
         if event.keyCode == kVK_Space {
             if self._originalString.count > 0 {
+                if self._selected < self._candidates.count && self._selected > 0{
+                    insertCandidate(self._candidates[self._selected])
+                    return true
+                }
+                
                 if let first = self._candidates.first {
                     insertCandidate(first)
                 }
+                
                 return true
             }
             return false
+        }
+        return nil
+    }
+    
+    private func otherKeyHandler(event: NSEvent) -> Bool? {
+        if self._originalString.count > 0 {
+            if event.keyCode == kVK_Home || event.keyCode == kVK_End {
+                return true
+            }
         }
         return nil
     }
@@ -281,6 +325,7 @@ class SphinxIMInputController: IMKInputController {
             escKeyHandler,
             enterKeyHandler,
             spaceKeyHandler,
+            otherKeyHandler,
             punctuationKeyHandler
         ])
         
@@ -295,9 +340,13 @@ class SphinxIMInputController: IMKInputController {
             self._candidatesMap[self._curPage] = self._candidates
         }
         
-        let candidatesData = (list: self._candidates, hasPrev: self._curPage > 1, hasNext: self._candidates.count > 0)
+        self._hasNext = self._candidates.count > 0
         
-        CandidatesController.shared.setCandidates(candidatesData,originalString: self._originalString,topLeft: getOriginPoint())
+        CandidatesController.shared.setCandidates(list: self._candidates, selected: self._selected,originalString: self._originalString,topLeft: getOriginPoint())
+    }
+    
+    func updateSelectedCandidatesWindow() {
+        CandidatesController.shared.updateSelectedCandidate(self._selected)
     }
     
     override func selectionRange() -> NSRange {
