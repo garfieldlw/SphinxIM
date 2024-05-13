@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		961C1097E6BC28F0EBE11243 /* Pods_SphinxIM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 632E939BC6B8517F32CEFE97 /* Pods_SphinxIM.framework */; };
 		B60CE5432BE7763200ED750E /* Dao.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60CE5422BE7763200ED750E /* Dao.swift */; };
+		B63881FE2BF28068002C3BF7 /* PreferencesPaneStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63881FD2BF28068002C3BF7 /* PreferencesPaneStatistics.swift */; };
 		B64D24CC2BE77EC90002696E /* CandidateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D24CB2BE77EC90002696E /* CandidateView.swift */; };
 		B64D24D32BE77F380002696E /* ThemeConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D24D22BE77F380002696E /* ThemeConfig.swift */; };
 		B64D24E62BE7830C0002696E /* SphinxIM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D24E52BE7830C0002696E /* SphinxIM.swift */; };
@@ -62,6 +63,7 @@
 		632E939BC6B8517F32CEFE97 /* Pods_SphinxIM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SphinxIM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99E1AD58D7A5B44553EC67F7 /* Pods-SphinxIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SphinxIM.debug.xcconfig"; path = "Target Support Files/Pods-SphinxIM/Pods-SphinxIM.debug.xcconfig"; sourceTree = "<group>"; };
 		B60CE5422BE7763200ED750E /* Dao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dao.swift; sourceTree = "<group>"; };
+		B63881FD2BF28068002C3BF7 /* PreferencesPaneStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesPaneStatistics.swift; sourceTree = "<group>"; };
 		B64D24CB2BE77EC90002696E /* CandidateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateView.swift; sourceTree = "<group>"; };
 		B64D24D22BE77F380002696E /* ThemeConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeConfig.swift; sourceTree = "<group>"; };
 		B64D24E52BE7830C0002696E /* SphinxIM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphinxIM.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 			children = (
 				B64D25412BE7D14A0002696E /* PreferencesController.swift */,
 				B64D25452BE7D32B0002696E /* PreferencesPaneAbout.swift */,
+				B63881FD2BF28068002C3BF7 /* PreferencesPaneStatistics.swift */,
 			);
 			path = Preferences;
 			sourceTree = "<group>";
@@ -478,6 +481,7 @@
 				B64D24EA2BE783AE0002696E /* SphinxIMMenu.swift in Sources */,
 				B64D252E2BE7D0FF0002696E /* SettingsTabViewController.swift in Sources */,
 				B64D24F62BE784640002696E /* Utils.swift in Sources */,
+				B63881FE2BF28068002C3BF7 /* PreferencesPaneStatistics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -36,7 +36,7 @@ class PreferencesController: NSObject, NSWindowDelegate {
                      title: "Statistics",
                     toolbarIcon: NSImage(named: NSImage.preferencesGeneralName)!
                 ) {
-                    PreferencesPaneAbout()
+                    PreferencesPaneStatisics()
                 },
                 Settings.Pane(
                     identifier: Settings.PaneIdentifier(rawValue: "user"),

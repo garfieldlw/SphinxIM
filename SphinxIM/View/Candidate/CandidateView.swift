@@ -36,23 +36,11 @@ struct CandidateView: View {
                 Text(candidate.text).foregroundColor(Color(themeConfig[colorScheme].candidateCodeColor))
             }
         }
-        .onTapGesture {
-            NotificationCenter.default.post(
-                name: CandidatesView.candidateSelected,
-                object: nil,
-                userInfo: [
-                    "candidate": candidate,
-                    "index": index
-                ]
-            )
-        }
         
     }
 }
 
 struct CandidatesView: View {
-    static let candidateSelected = Notification.Name("CandidatesView.candidateSelected")
-    
     var candidates: [Candidate]
     var origin: String
     var selected: Int
@@ -72,30 +60,6 @@ struct CandidatesView: View {
                 selected: selected
             )
         }
-    }
-    
-    func getIndicatorIcon(
-        imageName: String,
-        direction: CandidatesDirection,
-        disabled: Bool,
-        eventName: Notification.Name
-    ) -> some View {
-        return Image(imageName)
-            .renderingMode(.template)
-            .resizable()
-            .frame(width: 10, height: 10, alignment: .center)
-            .rotationEffect(Angle(degrees: direction == CandidatesDirection.horizontal ? 0 : -90), anchor: .center)
-            .onTapGesture {
-                if disabled { return }
-                NotificationCenter.default.post(
-                    name: eventName,
-                    object: nil
-                )
-            }
-            .foregroundColor(Color(disabled
-                                   ? themeConfig[colorScheme].pageIndicatorDisabledColor
-                                   : themeConfig[colorScheme].pageIndicatorColor
-                                  ))
     }
     
     var _indicator: some View {

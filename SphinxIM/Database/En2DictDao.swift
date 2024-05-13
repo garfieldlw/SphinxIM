@@ -16,8 +16,8 @@ class DaoDictEn2 {
     private let cId = Expression<Int64>("id")
     private let cCode = Expression<String>("code")
     private let cText = Expression<String>("text")
-    private  let cCount = Expression<Int64>("count")
-    private  let cCreate = Expression<String>("create")
+    private let cCount = Expression<Int64>("count")
+    private let cCreate = Expression<String>("create")
     
     //get list
     func List(id: Int64, code: String, limit: Int) -> [EntityEn2Dict] {

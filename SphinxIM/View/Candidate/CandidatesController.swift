@@ -37,13 +37,7 @@ class CandidatesController: NSWindow, NSWindowDelegate {
     }
     
     func bindEvents() {
-        let events: [NotificationObserver] = [
-            (CandidatesView.candidateSelected, { notification in
-                if let candidate = notification.userInfo?["candidate"] as? Candidate {
-                    self.inputController?.insertCandidate(candidate)
-                }
-            }),
-        ]
+        let events: [NotificationObserver] = []
         
         events.forEach { (observer) in NotificationCenter.default.addObserver(
             forName: observer.name, object: nil, queue: nil, using: observer.callback

@@ -22,11 +22,19 @@ class Statistics {
         guard let candidate = notification.userInfo?["candidate"] as? Candidate else {
             return
         }
+        
+        guard let keyCode = notification.userInfo?["key_code"] as? Int64 else {
+            return
+        }
+        
         if !Defaults[.enableStatistics] {
             return
         }
-        if candidate.type_mode == CandidateTypeMode.placeholder { return }
-        let sql = "insert into data(text, type, code, createdAt) values (:text, :type, :code, :createdAt)"
         
+        if candidate.type_mode == CandidateTypeMode.placeholder { return }
+        
+        if candidate.type_method == CandidateTypeMethod.placeholder { return }
+        
+        DaoStatistics.shared.insert(code: candidate.code, text: candidate.text, typeMode: Int64(candidate.type_mode.rawValue), typeMethod: Int64(candidate.type_method.rawValue), typeKey: keyCode)
     }
 }

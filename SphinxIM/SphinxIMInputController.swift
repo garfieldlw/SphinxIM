@@ -229,7 +229,7 @@ class SphinxIMInputController: IMKInputController {
             if self._originalString.count > 0 {
                 let index = pos - 1
                 if index < self._candidates.count {
-                    insertCandidate(self._candidates[index])
+                    insertCandidate(candidate: self._candidates[index], keyCode: event.keyCode)
                 } else {
                     self._originalString += string
                 }
@@ -268,12 +268,12 @@ class SphinxIMInputController: IMKInputController {
         if event.keyCode == kVK_Space {
             if self._originalString.count > 0 {
                 if self._selected < self._candidates.count && self._selected > 0{
-                    insertCandidate(self._candidates[self._selected])
+                    insertCandidate(candidate: self._candidates[self._selected], keyCode: event.keyCode)
                     return true
                 }
                 
                 if let first = self._candidates.first {
-                    insertCandidate(first)
+                    insertCandidate(candidate:first, keyCode: event.keyCode)
                 }
                 
                 return true
@@ -353,21 +353,21 @@ class SphinxIMInputController: IMKInputController {
         return NSRange(location: 0, length: self._originalString.count)
     }
     
-    func insertCandidate(_ candidate: Candidate) {
+    func insertCandidate(candidate: Candidate, keyCode: CGKeyCode) {
         insertText(candidate.text)
         let notification = Notification(
             name: SphinxIM.candidateInserted,
             object: nil,
-            userInfo: [ "candidate": candidate ]
+            userInfo: [ "candidate": candidate, "key_code": Int64(keyCode.hashValue) ]
         )
-        // 异步派发事件，防止阻塞当前线程
+        
         NotificationQueue.default.enqueue(notification, postingStyle: .whenIdle)
     }
     
     func insertText(_ text: String) {
         NSLog("insertText: %@", text)
         if text.count > 0 {
-            var newText = text
+            let newText = text
             let value = NSAttributedString(string: newText)
             client()?.insertText(value, replacementRange: replacementRange())
             self._lastInputIsNumber = newText.last != nil && Int(String(newText.last!)) != nil

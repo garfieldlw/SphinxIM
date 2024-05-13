@@ -34,6 +34,7 @@ class Dao {
     ]
     
     private init () {
+        NSLog("[Dao]init")
         do{
             let dir = getDir()
             
@@ -49,22 +50,23 @@ class Dao {
             db = try Connection(dir.relativePath+"/db.sqlite3")
             dbStatistics = try Connection(dir.relativePath+"/db_statistics.sqlite3")
         }catch {
-            NSLog("[Dao]init: "+error.localizedDescription)
+            NSLog("[Dao]init: \(error)")
         }
         
     }
     
     public func InitDB() {
+        NSLog("[Dao]InitDB")
         do {
             try upgrade.forEach { sql in
-                _ =  try db?.prepare(sql)
+                _ =  try db?.run(sql)
             }
             
             try upgradeStatistics.forEach { sql in
-                _ =  try dbStatistics?.prepare(sql)
+                _ =  try dbStatistics?.run(sql)
             }
         }catch {
-            NSLog("[Dao]InitDB: "+error.localizedDescription)
+            NSLog("[Dao]InitDB: \(error)")
         }
     }
     
