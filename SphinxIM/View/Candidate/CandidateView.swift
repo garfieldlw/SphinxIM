@@ -14,10 +14,10 @@ struct CandidateView: View {
     var indexVisible = true
     
     var selected: Int
-
+    
     @Default(.themeConfig) private var themeConfig
     @Environment(\.colorScheme) var colorScheme
-
+    
     var body: some View {
         return HStack(alignment: .center, spacing: 2) {
             if selected == index {
@@ -52,16 +52,16 @@ struct CandidateView: View {
 
 struct CandidatesView: View {
     static let candidateSelected = Notification.Name("CandidatesView.candidateSelected")
-
+    
     var candidates: [Candidate]
     var origin: String
     var selected: Int
-
+    
     @Default(.candidatesDirection) private var direction
     @Default(.themeConfig) private var themeConfig
     @Default(.showCodeInWindow) private var showCodeInWindow
     @Environment(\.colorScheme) var colorScheme
-
+    
     var _candidatesView: some View {
         ForEach(Array(candidates.enumerated()), id: \.offset) { (index, candidate) -> CandidateView in
             CandidateView(
@@ -73,7 +73,7 @@ struct CandidatesView: View {
             )
         }
     }
-
+    
     func getIndicatorIcon(
         imageName: String,
         direction: CandidatesDirection,
@@ -97,7 +97,7 @@ struct CandidatesView: View {
                                    : themeConfig[colorScheme].pageIndicatorColor
                                   ))
     }
-
+    
     var _indicator: some View {
         if candidates.count <= 1 {
             return AnyView(EmptyView())
@@ -127,14 +127,14 @@ struct CandidatesView: View {
                 .fixedSize()
             }
         })
-            .padding(.top, CGFloat(themeConfig[colorScheme].windowPaddingTop))
-            .padding(.bottom, CGFloat(themeConfig[colorScheme].windowPaddingBottom))
-            .padding(.leading, CGFloat(themeConfig[colorScheme].windowPaddingLeft))
-            .padding(.trailing, CGFloat(themeConfig[colorScheme].windowPaddingRight))
-            .fixedSize()
-            .font(.system(size: CGFloat(themeConfig[colorScheme].fontSize)))
-            .background(Color(themeConfig[colorScheme].windowBackgroundColor))
-            .cornerRadius(CGFloat(themeConfig[colorScheme].windowBorderRadius), antialiased: true)
+        .padding(.top, CGFloat(themeConfig[colorScheme].windowPaddingTop))
+        .padding(.bottom, CGFloat(themeConfig[colorScheme].windowPaddingBottom))
+        .padding(.leading, CGFloat(themeConfig[colorScheme].windowPaddingLeft))
+        .padding(.trailing, CGFloat(themeConfig[colorScheme].windowPaddingRight))
+        .fixedSize()
+        .font(.system(size: CGFloat(themeConfig[colorScheme].fontSize)))
+        .background(Color(themeConfig[colorScheme].windowBackgroundColor))
+        .cornerRadius(CGFloat(themeConfig[colorScheme].windowBorderRadius), antialiased: true)
     }
 }
 

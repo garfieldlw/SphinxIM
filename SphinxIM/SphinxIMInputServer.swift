@@ -12,12 +12,12 @@ extension SphinxIMInputController {
     func previousClientHandler() {
         close()
     }
-
+    
     override func activateServer(_ sender: Any!) {
         NSLog("[SphinxIMInputController] activate server: \(client()?.bundleIdentifier() ?? sender.debugDescription)")
-
+        
         previousClientHandler()
-
+        
         CandidatesController.shared.inputController = self
         
     }

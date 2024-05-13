@@ -19,7 +19,7 @@ extension SphinxIMInputController {
         NSApp.setActivationPolicy(.accessory)
         PreferencesController.shared.show()
     }
-
+    
     @objc func setAppicationMode(_ sender: Any!) {
         if let menuWrapper = sender as? [String: Any],
            let menuItem = menuWrapper["IMKCommandMenuItem"] as? NSMenuItem,

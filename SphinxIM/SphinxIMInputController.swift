@@ -64,7 +64,7 @@ class SphinxIMInputController: IMKInputController {
             }else {
                 self.refreshCandidatesWindow(pre_next: true)
             }
-     
+            
             return
             
         }

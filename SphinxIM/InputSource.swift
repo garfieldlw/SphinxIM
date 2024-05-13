@@ -17,7 +17,7 @@ enum InputSourceUsage {
 class InputSource {
     let installLocation = "/Library/Input Methods/SphinxIM.app"
     let kSourceID = Bundle.main.bundleIdentifier!
-
+    
     func registerInputSource() {
         if !isEnabled() {
             let installedLocationURL = NSURL(fileURLWithPath: installLocation)
@@ -25,15 +25,15 @@ class InputSource {
             NSLog("register input source: \(err)")
         }
     }
-
+    
     private func findInputSource(forUsage: InputSourceUsage = .enable)
-        -> TISInputSource? {
+    -> TISInputSource? {
         let conditions = NSMutableDictionary()
         conditions.setValue(kSourceID, forKey: kTISPropertyInputSourceID as String)
         guard let sourceList = TISCreateInputSourceList(conditions, true)?.takeRetainedValue() as? [TISInputSource] else {
             return nil
         }
-
+        
         for index in 0..<sourceList.count {
             let inputSource = sourceList[index]
             let selectable = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(
@@ -54,7 +54,7 @@ class InputSource {
         }
         return nil
     }
-
+    
     func selectInputSource(callback: @escaping (Bool) -> Void) {
         let maxTryTimes = 30
         var tryTimes = 0
@@ -79,7 +79,7 @@ class InputSource {
             }
         }
     }
-
+    
     func activateInputSource() {
         guard let result = findInputSource() else {
             return
@@ -92,7 +92,7 @@ class InputSource {
             NSLog("Enabled input source: \(err)")
         }
     }
-
+    
     func deactivateInputSource() {
         guard let source = findInputSource() else {
             return
@@ -101,20 +101,20 @@ class InputSource {
         TISDisableInputSource(source)
         NSLog("Disable input source")
     }
-
+    
     func onSelectChanged(callback: @escaping (Bool) -> Void) -> NSObjectProtocol {
         let observer = DistributedNotificationCenter.default()
             .addObserver(
                 forName: .init(String(kTISNotifySelectedKeyboardInputSourceChanged)),
-                 object: nil,
-                 queue: nil,
-                 using: { _ in
+                object: nil,
+                queue: nil,
+                using: { _ in
                     callback(self.isSelected())
                 }
             )
         return observer
     }
-
+    
     func isSelected() -> Bool {
         guard let result = findInputSource(forUsage: .selected) else {
             return false
@@ -124,10 +124,10 @@ class InputSource {
             kTISPropertyInputSourceIsSelected
         ).assumingMemoryBound(to: CFBoolean.self)
         let isSelected = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsSelected).takeUnretainedValue())
-
+        
         return isSelected
     }
-
+    
     func isEnabled() -> Bool {
         guard let result = findInputSource(forUsage: .enable) else {
             return false
@@ -137,9 +137,9 @@ class InputSource {
             kTISPropertyInputSourceIsEnabled
         ).assumingMemoryBound(to: CFBoolean.self)
         let isEnabled = CFBooleanGetValue(Unmanaged<CFBoolean>.fromOpaque(unsafeIsEnabled).takeUnretainedValue())
-
+        
         return isEnabled
     }
-
+    
     static let shared = InputSource()
 }

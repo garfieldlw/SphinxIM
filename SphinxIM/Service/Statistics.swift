@@ -27,6 +27,6 @@ class Statistics {
         }
         if candidate.type_mode == CandidateTypeMode.placeholder { return }
         let sql = "insert into data(text, type, code, createdAt) values (:text, :type, :code, :createdAt)"
- 
+        
     }
 }

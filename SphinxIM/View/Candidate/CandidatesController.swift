@@ -12,17 +12,17 @@ import InputMethodKit
 class CandidatesController: NSWindow, NSWindowDelegate {
     let hostingView = NSHostingView(rootView: CandidatesView(candidates: [], origin: "", selected: 0))
     var inputController: SphinxIMInputController?
-
+    
     func windowDidMove(_ notification: Notification) {
         DispatchQueue.main.async {
             self.limitFrameInScreen()
         }
     }
-
+    
     func windowDidResize(_ notification: Notification) {
         limitFrameInScreen()
     }
-
+    
     func setCandidates(list: [Candidate], selected: Int,originalString: String, topLeft: NSPoint) {
         hostingView.rootView.candidates = list
         hostingView.rootView.origin = originalString
@@ -35,7 +35,7 @@ class CandidatesController: NSWindow, NSWindowDelegate {
     func updateSelectedCandidate(_ selected: Int) {
         hostingView.rootView.selected = selected
     }
-
+    
     func bindEvents() {
         let events: [NotificationObserver] = [
             (CandidatesView.candidateSelected, { notification in
@@ -46,9 +46,9 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         ]
         
         events.forEach { (observer) in NotificationCenter.default.addObserver(
-          forName: observer.name, object: nil, queue: nil, using: observer.callback
+            forName: observer.name, object: nil, queue: nil, using: observer.callback
         )}
-
+        
         NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
             NSLog("[CandidatesWindow] globalMonitorForEvents flagsChanged: \(event)")
             if !InputSource.shared.isSelected() {
@@ -57,7 +57,7 @@ class CandidatesController: NSWindow, NSWindowDelegate {
             _ = self.inputController?.flagChangedHandler(event: event)
         }
     }
-
+    
     override init(
         contentRect: NSRect,
         styleMask style: NSWindow.StyleMask,
@@ -65,7 +65,7 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         defer flag: Bool
     ) {
         super.init(contentRect: contentRect, styleMask: style, backing: backingStoreType, defer: flag)
-
+        
         level = NSWindow.Level(rawValue: NSWindow.Level.RawValue(CGShieldingWindowLevel()))
         styleMask = .init(arrayLiteral: .fullSizeContentView, .borderless)
         isReleasedWhenClosed = false
@@ -74,12 +74,12 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         setSizePolicy()
         bindEvents()
     }
-
+    
     private func limitFrameInScreen() {
-       let origin = self.transformTopLeft(originalTopLeft: NSPoint(x: self.frame.minX, y: self.frame.maxY))
-       self.setFrameTopLeftPoint(origin)
+        let origin = self.transformTopLeft(originalTopLeft: NSPoint(x: self.frame.minX, y: self.frame.maxY))
+        self.setFrameTopLeftPoint(origin)
     }
-
+    
     private func setSizePolicy() {
         hostingView.translatesAutoresizingMaskIntoConstraints = false
         guard self.contentView != nil else {
@@ -91,17 +91,17 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         self.contentView?.topAnchor.constraint(equalTo: hostingView.topAnchor).isActive = true
         self.contentView?.bottomAnchor.constraint(equalTo: hostingView.bottomAnchor).isActive = true
     }
-
+    
     private func transformTopLeft(originalTopLeft: NSPoint) -> NSPoint {
         NSLog("[SphinxIMCandidatesWindow] transformTopLeft: \(frame)")
-
+        
         let screenPadding: CGFloat = 6
-
+        
         var left = originalTopLeft.x
         var top = originalTopLeft.y
         if let curScreen = Utils.shared.getScreenFromPoint(originalTopLeft) {
             let screen = curScreen.frame
-
+            
             if originalTopLeft.x + frame.width > screen.maxX - screenPadding {
                 left = screen.maxX - frame.width - screenPadding
             }
@@ -111,6 +111,6 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         }
         return NSPoint(x: left, y: top)
     }
-
+    
     static let shared = CandidatesController()
 }
