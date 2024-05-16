@@ -26,7 +26,7 @@ class DaoStatistics {
         let insert = table.insert( cCode <- code, cText <- text, cTypeMode <- typeMode, cTypeMethod <- typeMethod, cTypeKey <- typeKey)
         
         do {
-            let ds = try Dao.shared.dbStatistics?.run(insert)
+            _ = try Dao.shared.dbStatistics?.run(insert)
         }catch {
             NSLog("[DaoStatistics]insert: \(error)")
         }
