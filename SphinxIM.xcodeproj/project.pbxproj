@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		961C1097E6BC28F0EBE11243 /* Pods_SphinxIM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 632E939BC6B8517F32CEFE97 /* Pods_SphinxIM.framework */; };
+		B609C98E2BFA882100A03B72 /* postinstall.sh in Resources */ = {isa = PBXBuildFile; fileRef = B609C98C2BFA882100A03B72 /* postinstall.sh */; };
+		B609C98F2BFA882100A03B72 /* preinstall.sh in Resources */ = {isa = PBXBuildFile; fileRef = B609C98D2BFA882100A03B72 /* preinstall.sh */; };
 		B60CE5432BE7763200ED750E /* Dao.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60CE5422BE7763200ED750E /* Dao.swift */; };
 		B63881FE2BF28068002C3BF7 /* PreferencesPaneStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63881FD2BF28068002C3BF7 /* PreferencesPaneStatistics.swift */; };
 		B64D24CC2BE77EC90002696E /* CandidateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B64D24CB2BE77EC90002696E /* CandidateView.swift */; };
@@ -62,6 +64,9 @@
 /* Begin PBXFileReference section */
 		632E939BC6B8517F32CEFE97 /* Pods_SphinxIM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SphinxIM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99E1AD58D7A5B44553EC67F7 /* Pods-SphinxIM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SphinxIM.debug.xcconfig"; path = "Target Support Files/Pods-SphinxIM/Pods-SphinxIM.debug.xcconfig"; sourceTree = "<group>"; };
+		B609C9892BFA877200A03B72 /* SphinxIM.pkgproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = SphinxIM.pkgproj; sourceTree = "<group>"; };
+		B609C98C2BFA882100A03B72 /* postinstall.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = postinstall.sh; sourceTree = "<group>"; };
+		B609C98D2BFA882100A03B72 /* preinstall.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = preinstall.sh; sourceTree = "<group>"; };
 		B60CE5422BE7763200ED750E /* Dao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dao.swift; sourceTree = "<group>"; };
 		B63881FD2BF28068002C3BF7 /* PreferencesPaneStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesPaneStatistics.swift; sourceTree = "<group>"; };
 		B64D24CB2BE77EC90002696E /* CandidateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CandidateView.swift; sourceTree = "<group>"; };
@@ -136,6 +141,16 @@
 				632E939BC6B8517F32CEFE97 /* Pods_SphinxIM.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B609C98A2BFA877200A03B72 /* Package */ = {
+			isa = PBXGroup;
+			children = (
+				B609C98C2BFA882100A03B72 /* postinstall.sh */,
+				B609C98D2BFA882100A03B72 /* preinstall.sh */,
+				B609C9892BFA877200A03B72 /* SphinxIM.pkgproj */,
+			);
+			path = Package;
 			sourceTree = "<group>";
 		};
 		B60CE5412BE7761600ED750E /* Database */ = {
@@ -263,6 +278,7 @@
 		B66E9DB82BE69A2800E7505D = {
 			isa = PBXGroup;
 			children = (
+				B609C98A2BFA877200A03B72 /* Package */,
 				A5F4469EA39D5F85ECC2CA54 /* Frameworks */,
 				E45A5E9BBF0EEA69B655A655 /* Pods */,
 				B66E9DC22BE69A2800E7505D /* Products */,
@@ -384,6 +400,8 @@
 				B67463A42BE6AECE00BD2673 /* SphinxIM.tiff in Resources */,
 				B66E9DCC2BE69A2A00E7505D /* Preview Assets.xcassets in Resources */,
 				B66E9DC92BE69A2A00E7505D /* Assets.xcassets in Resources */,
+				B609C98F2BFA882100A03B72 /* preinstall.sh in Resources */,
+				B609C98E2BFA882100A03B72 /* postinstall.sh in Resources */,
 				B64D258F2BEA220A0002696E /* db.sqlite3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

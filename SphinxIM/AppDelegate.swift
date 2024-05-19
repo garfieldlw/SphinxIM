@@ -29,13 +29,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var sphinx: SphinxIM!
     var statistics: Statistics!
     
-    func installInputSource() {
+    func install() {
         print("install input source")
         InputSource.shared.registerInputSource()
         InputSource.shared.activateInputSource()
-        InputSource.shared.selectInputSource { _ in
-            NSApp.terminate(self)
-        }
+        NSApp.terminate(self)
     }
     
     func stop() {
@@ -43,8 +41,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.terminate(nil)
     }
     
+    private func handler() -> Bool {
+        if CommandLine.arguments.count > 1 {
+            print("[SphinxIM] launch argument: \(CommandLine.arguments[1])")
+            let command = CommandLine.arguments[1]
+            if command == "--install" {
+                stop()
+                install()
+                return false
+            }
+     
+            if command == "--stop" {
+                stop()
+                return false
+            }
+        }
+        return true
+    }
+    
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         NSLog("[SphinxIM] app is running")
+        
+        if !handler() {
+            NSLog("[SphinxIM] run handler")
+            return
+        }
         
         Dao.shared.InitDB()
         

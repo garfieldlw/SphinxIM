@@ -42,14 +42,6 @@ class CandidatesController: NSWindow, NSWindowDelegate {
         events.forEach { (observer) in NotificationCenter.default.addObserver(
             forName: observer.name, object: nil, queue: nil, using: observer.callback
         )}
-        
-        NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { (event) in
-            NSLog("[CandidatesWindow] globalMonitorForEvents flagsChanged: \(event)")
-            if !InputSource.shared.isSelected() {
-                return
-            }
-            _ = self.inputController?.flagChangedHandler(event: event)
-        }
     }
     
     override init(

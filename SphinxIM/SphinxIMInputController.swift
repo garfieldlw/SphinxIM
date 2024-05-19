@@ -132,13 +132,6 @@ class SphinxIMInputController: IMKInputController {
         return nil
     }
     
-    func flagChangedHandler(event: NSEvent) -> Bool? {
-        if event.type == .flagsChanged || (event.modifierFlags != .init(rawValue: 0) && event.modifierFlags != .shift && event.modifierFlags != .init(arrayLiteral: .numericPad, .function)) {
-            return false
-        }
-        return nil
-    }
-    
     private func predictorHandler(event: NSEvent) -> Bool? {
         self._lastInputIsNumber = false
         
@@ -316,7 +309,6 @@ class SphinxIMInputController: IMKInputController {
         
         let handler = Utils.shared.processHandlers(handlers: [
             hotkeyHandler,
-            flagChangedHandler,
             predictorHandler,
             pageKeyHandler,
             deleteKeyHandler,
