@@ -25,25 +25,11 @@ class PreferencesController: NSObject, NSWindowDelegate {
         self.controller = SettingsWindowController.init(
             panes: [
                 Settings.Pane(
-                    identifier: Settings.PaneIdentifier(rawValue: "general"),
-                     title: "General",
-                    toolbarIcon: NSImage(named: NSImage.preferencesGeneralName)!
-                ) {
-                    PreferencesPaneAbout()
-                },
-                Settings.Pane(
                     identifier: Settings.PaneIdentifier(rawValue: "statistics"),
                      title: "Statistics",
                     toolbarIcon: NSImage(named: NSImage.preferencesGeneralName)!
                 ) {
                     PreferencesPaneStatisics()
-                },
-                Settings.Pane(
-                    identifier: Settings.PaneIdentifier(rawValue: "user"),
-                     title: "User",
-                    toolbarIcon: NSImage(named: NSImage.preferencesGeneralName)!
-                ) {
-                    PreferencesPaneAbout()
                 },
                 Settings.Pane(
                     identifier: Settings.PaneIdentifier(rawValue: "about"),
