@@ -9,8 +9,8 @@ import SwiftUI
 
 struct PreferencesPaneAbout: View {
 
-    let mainVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String as String
-    let minorVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as! String as String
+    let mainVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
+    let minorVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as! String
     
     var body: some View {
         Settings.Container(contentWidth: 450.0) {
