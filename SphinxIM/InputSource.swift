@@ -56,7 +56,7 @@ class InputSource {
         case .enable:
             return (inputSource, enableable)
         case .selected:
-            return (inputSource, enableable)
+            return (inputSource, selectable)
         }
     }
     
@@ -71,6 +71,10 @@ class InputSource {
     
     func deactivateInputSource() {
         let (result, able) = findInputSource(forUsage: .register)
+        
+        if !able! {
+            return
+        }
         
         TISDeselectInputSource(result)
         TISDisableInputSource(result)
